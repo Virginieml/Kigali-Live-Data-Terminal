@@ -1,0 +1,150 @@
+:root {
+  --ink: #4a4477;
+  --muted: #8a86b0;
+  --blue: #cfe8ff;
+  --pink: #ffd6e8;
+  --yellow: #fff3bf;
+  --green: #d3f5e0;
+  --purple: #e2d9ff;
+  --ok: #1f9d6b;
+  --hot: #e5484d;
+}
+
+* { box-sizing: border-box; margin: 0; }
+
+body {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  font-family: "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 10% 15%, var(--pink) 0, transparent 40%),
+    radial-gradient(circle at 90% 20%, var(--blue) 0, transparent 40%),
+    radial-gradient(circle at 20% 90%, var(--yellow) 0, transparent 40%),
+    radial-gradient(circle at 85% 85%, var(--green) 0, transparent 40%),
+    var(--purple);
+  background-attachment: fixed;
+}
+
+.dashboard { width: min(560px, 100%); text-align: center; display: grid; gap: 20px; }
+
+h1 {
+  font-size: 2.6rem;
+  letter-spacing: 1px;
+  background: linear-gradient(90deg, #7aa7ff, #c084fc, #ff8fbf);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+header p { color: var(--muted); margin-top: 4px; }
+
+/* ---------- Weather scene ---------- */
+.scene {
+  position: relative;
+  height: 240px;
+  border-radius: 28px;
+  overflow: hidden;
+  background: linear-gradient(180deg, var(--sky-top, var(--blue)), var(--sky-bottom, var(--pink)));
+  box-shadow: 0 14px 40px rgba(192, 132, 252, 0.25);
+  border: 3px solid rgba(255, 255, 255, 0.7);
+  transition: background 0.8s;
+}
+.scene > * { position: absolute; opacity: 0; transition: opacity 0.8s; }
+.scene-label {
+  left: 0; right: 0; bottom: 14px; opacity: 1 !important;
+  font-weight: 700; font-size: 1.05rem; color: var(--ink);
+}
+
+.sun {
+  width: 90px; height: 90px; border-radius: 50%; top: 40px; left: calc(50% - 45px);
+  background: radial-gradient(circle, #fffbd0, #ffd84d 70%);
+  box-shadow: 0 0 0 14px rgba(255, 216, 77, 0.3), 0 0 60px 20px rgba(255, 216, 77, 0.6);
+  animation: pulse 4s ease-in-out infinite;
+}
+.moon {
+  width: 80px; height: 80px; border-radius: 50%; top: 45px; left: calc(50% - 40px);
+  background: #fffaf0; box-shadow: inset -18px -6px 0 #e9def8, 0 0 40px 10px rgba(255, 255, 255, 0.6);
+}
+.cloud {
+  width: 130px; height: 44px; border-radius: 50px; background: #fff;
+  filter: drop-shadow(0 6px 8px rgba(120, 100, 200, 0.15));
+}
+.cloud::before, .cloud::after { content: ""; position: absolute; background: #fff; border-radius: 50%; }
+.cloud::before { width: 60px; height: 60px; top: -28px; left: 20px; }
+.cloud::after { width: 46px; height: 46px; top: -18px; left: 68px; }
+.c1 { top: 55px; left: 12%; animation: drift 14s ease-in-out infinite alternate; }
+.c2 { top: 100px; right: 8%; transform: scale(0.8); animation: drift 18s ease-in-out infinite alternate-reverse; }
+.c3 { top: 30px; right: 30%; transform: scale(0.6); animation: drift 22s ease-in-out infinite alternate; }
+
+.rain { inset: 0; }
+.drop {
+  position: absolute; top: -20px; width: 2px; height: 16px; border-radius: 2px;
+  background: linear-gradient(transparent, #7aa7ff);
+  animation: fall linear infinite;
+}
+.bolt {
+  top: 70px; left: calc(50% - 20px); width: 40px; height: 90px; background: #ffe066;
+  clip-path: polygon(55% 0, 15% 55%, 45% 55%, 30% 100%, 85% 40%, 55% 40%);
+  animation: flash 3s infinite;
+}
+.fog-layer {
+  inset: 0; background: repeating-linear-gradient(180deg, rgba(255,255,255,0.7) 0 18px, rgba(255,255,255,0.15) 18px 40px);
+  animation: drift 8s ease-in-out infinite alternate;
+}
+
+/* Which layers show for each weather state */
+.scene.clear .sun, .scene.clear .c3,
+.scene.partly .sun, .scene.partly .c1, .scene.partly .c2 { opacity: 1; }
+.scene.night .moon, .scene.night .c3 { opacity: 1; }
+.scene.cloudy .c1, .scene.cloudy .c2, .scene.cloudy .c3 { opacity: 1; }
+.scene.rain .c1, .scene.rain .c2, .scene.rain .c3, .scene.rain .rain,
+.scene.storm .c1, .scene.storm .c2, .scene.storm .c3, .scene.storm .rain, .scene.storm .bolt { opacity: 1; }
+.scene.fog .c1, .scene.fog .fog-layer { opacity: 1; }
+.scene.idle .c1, .scene.idle .c3 { opacity: 0.9; }
+
+/* Pastel sky colours per state */
+.scene.clear  { --sky-top: #bfe3ff; --sky-bottom: #fff3bf; }   /* blue to yellow */
+.scene.partly { --sky-top: #cfe8ff; --sky-bottom: #ffe3ef; }   /* blue to pink */
+.scene.cloudy { --sky-top: #e2d9ff; --sky-bottom: #e6f0ff; }   /* purple to light blue */
+.scene.fog    { --sky-top: #eee8ff; --sky-bottom: #dff7ea; }   /* lilac to mint */
+.scene.rain   { --sky-top: #c6d8ff; --sky-bottom: #e2d9ff; }   /* blue to purple */
+.scene.storm  { --sky-top: #b9b4ee; --sky-bottom: #ffd0e4; }   /* purple to pink */
+.scene.night  { --sky-top: #a9a4f0; --sky-bottom: #ffcfe6; }   /* purple to pink */
+
+@keyframes pulse { 50% { transform: scale(1.08); } }
+@keyframes drift { to { transform: translateX(40px); } }
+@keyframes fall { to { transform: translateY(280px); } }
+@keyframes flash { 0%, 90%, 100% { filter: brightness(1); } 93% { filter: brightness(2.2); } }
+
+/* ---------- Cards (each has its own pastel colour) ---------- */
+.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.card {
+  border-radius: 22px; padding: 18px 10px;
+  border: 3px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 8px 24px rgba(150, 120, 220, 0.15);
+}
+.card:nth-child(1) { background: linear-gradient(160deg, var(--yellow), #ffe8c7); }
+.card:nth-child(2) { background: linear-gradient(160deg, var(--blue), var(--purple)); }
+.card:nth-child(3) { background: linear-gradient(160deg, var(--green), #e3f7c9); }
+
+.card h2 { font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+.value { margin-top: 10px; font-size: 1.5rem; font-weight: 800; min-height: 2.2rem; }
+#status-alert { font-size: 1.05rem; padding-top: 6px; }
+#status-alert.hot { color: var(--hot); }
+#status-alert.ok { color: var(--ok); }
+#status-alert.error { color: var(--hot); }
+
+button {
+  justify-self: center; padding: 14px 34px; border: 0; border-radius: 999px; cursor: pointer;
+  font: inherit; font-weight: 700; color: #fff;
+  background: linear-gradient(135deg, #ff9ccc, #b794f6 55%, #7aa7ff);
+  box-shadow: 0 10px 24px rgba(183, 148, 246, 0.45);
+  transition: transform 0.15s;
+}
+button:hover { transform: translateY(-2px); }
+button:disabled { opacity: 0.6; cursor: wait; }
+.updated { color: var(--muted); font-size: 0.85rem; min-height: 1.2rem; }
+
+@media (max-width: 480px) { .cards { grid-template-columns: 1fr; } }

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kigali Uplink</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="dashboard">
+    <header>
+      <h1>Kigali Uplink</h1>
+      <p>Live weather from the Land of a Thousand Hills</p>
+    </header>
+
+    <!-- Animated weather scene: JS switches its class (clear, cloudy, rain, storm, fog) -->
+    <div id="scene" class="scene idle">
+      <div class="sun"></div>
+      <div class="moon"></div>
+      <div class="cloud c1"></div>
+      <div class="cloud c2"></div>
+      <div class="cloud c3"></div>
+      <div id="rain" class="rain"></div>
+      <div class="bolt"></div>
+      <div class="fog-layer"></div>
+      <span id="scene-label" class="scene-label">Waiting for signal…</span>
+    </div>
+
+    <section class="cards">
+      <article class="card">
+        <h2>Temperature</h2>
+        <div id="temp-display" class="value">--</div>
+      </article>
+      <article class="card">
+        <h2>Wind</h2>
+        <div id="wind-display" class="value">--</div>
+      </article>
+      <article class="card">
+        <h2>Status</h2>
+        <div id="status-alert" class="value">Standby</div>
+      </article>
+    </section>
+
+    <button id="fetch-btn">Fetch Live Data</button>
+    <p id="updated" class="updated"></p>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
